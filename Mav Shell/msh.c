@@ -82,21 +82,67 @@ int main()
       {
         token[token_count] = NULL;
       }
-        token_count++;
+      token_count++;
     }
 
     // Now print the tokenized input as a debug check
-    // \TODO Remove this code and replace with your shell functionality
-
-    int token_index  = 0;
-    for( token_index = 0; token_index < token_count; token_index ++ ) 
+    //Condition to check if any input is given.
+    //If a blank line is entered, the shell will clear the
+    if (!(token[0] == NULL))
     {
-      printf("token[%d] = %s\n", token_index, token[token_index] );  
+      // If provided input is exit or quit, program exits
+      if ((strcmp(token[0], "exit") == 0) || (strcmp(token[0], "quit") == 0))
+      {
+        free(head_ptr);
+        return 0;
+      }
+      //Condition to accept "cd" command.
+      //If cd command is entered, it will call chdir function
+      //which can be used to change directory
+      else if (strcmp(token[0], "cd") == 0)
+      {
+        int status = chdir(token[1]);
+        if (status == -1)
+        {
+          printf("No Such file or directory found %s. \n", token[1]);
+          return 0;
+        }
+        else
+        {
+          return 0;
+        }
+      }
+      else if (token[0][0] == '!')
+      {
+        int i;
+        char n[MAX_COMMAND_SIZE];
+      }
+      else if (strcmp(token[0], "pidhistory") == 0)
+      {
+        printf("pidhistory");
+      }
+      //If some shell command, other than above derived commands, is entered by the user
+      else
+      {
+        int pid = fork();
+        if (pid == 0)
+        {
+          if (execvp(token[0], token) == -1)
+          {
+            printf("%s: Command not found.\n", token[0]);
+            exit(0);
+          }
+        }
+        else
+        {
+          int status;
+          wait(&status);
+        }
+      }
     }
-
-    free( head_ptr );
-
+    free(head_ptr);
   }
+
   return 0;
   // e2520ca2-76f3-11ec-90d6-0242ac120003
 }
